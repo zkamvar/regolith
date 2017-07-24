@@ -1,0 +1,10 @@
+Package: regolith
+Title: A sandbox package to test C routines
+Version: 0.0.0.9000
+Authors@R: person(c("Zhian", "N."), "Kamvar", email = "zkamvar@gmail.com", role = c("aut", "cre"))
+Description: While developing 'poppr', I find it's useful to have a sandbox available for me to test out C routines while avoiding the bulk of everything else. This package allows me to do this and document my thought process along the way.
+Depends: R (>= 3.4.1)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
