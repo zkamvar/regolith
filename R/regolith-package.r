@@ -4,4 +4,5 @@
 #'
 #' @name regolith
 #' @docType package
+#' @useDynLib regolith, .registration = TRUE
 NULL
