@@ -54,26 +54,55 @@ SEXP add_one_c(SEXP x)
 	return out;
 }
 
+SEXP facts_c(SEXP n)
+{
+	int i;
+	int N = asInteger(n);
+	int* OUT;
+	SEXP out = PROTECT(allocVector(INTSXP, N));
+	OUT = INTEGER(out);
+	for (i = 1; i <= N; i++) // 2017-08-10: fencepost error with i < N
+	{
+		OUT[i - 1] = (i == 1) ? i : OUT[i - 2] * i;
+	}
+	UNPROTECT(1);
+	return(out);
+}
+
+SEXP sort_c(SEXP arr)
+{
+	SEXP res = PROTECT(allocVector(INTSXP, length(arr)));
+	R_qsort_int(INTEGER(arr), 0, length(arr));
+	for (int i = 0; i < length(arr); i++)
+	{
+		INTEGER(res)[i] = INTEGER(arr)[i];
+	}
+	UNPROTECT(1);
+	return(res);
+}
+
 #ifdef CAN_RUN
 SEXP expand_binomial_c(SEXP arr) {
  	SEXP res = PROTECT(allocVector(INTSXP, 1));
+ 	int* RES = INTEGER(res);
  	int i;
  	int n = length(arr);
  	int count = 1;
  	int* facts;
  	facts = R_Calloc(n, int);
- 	for (i = 1; i < n; i++)
+ 	for (i = 1; i <= n; i++)
  	{
  		facts[i - 1] = (i == 1) ? i : facts[i - 2] * i;
  	}
- 	qsort(arr, n, sizeof(int), intcmp);
+ 	R_qsort_int(INTEGER(arr), 0, n);
  	int previous_value = INTEGER(arr)[0];
+ 	RES[0] = count;
  	for (i = 1; i < n; i++)
   	{
 		if (INTEGER(arr)[i] != previous_value)
 		{
-			INTEGER(res)[0] *= facts[count - 1];
-			Rprintf("%d count: %d (%d)\n", INTEGER(arr)[i - 1], count, INTEGER(res)[0]);
+			RES[0] *= facts[count - 1];
+			Rprintf("%d count: %d (%d)\n", INTEGER(arr)[i - 1], count, RES[0]);
 			count = 1;
 		}
 		else
@@ -83,7 +112,9 @@ SEXP expand_binomial_c(SEXP arr) {
 		previous_value = INTEGER(arr)[i];
 
  	}
- 	INTEGER(res)[0] *= facts[count - 1];
+ 	RES[0] *= facts[count - 1];
+ 	Rprintf("%d count: %d (%d)\n", INTEGER(arr)[n - 1], count, RES[0]);
+ 	RES[0] = facts[n - 1]/RES[0]; // n!/a!b!c!
  	R_Free(facts);
  	UNPROTECT(1);
  	return(res);
