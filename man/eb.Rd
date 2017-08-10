@@ -2,20 +2,24 @@
 % Please edit documentation in R/add.R
 \name{eb}
 \alias{eb}
-\title{Title}
+\title{Number of possible rearrangements}
 \usage{
 eb(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{an integer vector}
 }
 \value{
-a number
+a number indicating the number of possible rearrangements for a given
+vector using binomial expansion: \code{n!/(a!b!c!)}
 }
 \description{
-Title
+Number of possible rearrangements
 }
 \examples{
 x <- c(10L, 9L, 9L, 8L, 10L)
 eb(x)
+eb(c(1, 2))
+eb(c(1, 1))
+eb(c(1, 2, 3, 3))
 }

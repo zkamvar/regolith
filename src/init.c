@@ -10,14 +10,18 @@
 /* .Call calls */
 extern SEXP add_c(SEXP, SEXP);
 extern SEXP expand_binomial_c(SEXP);
+extern SEXP facts_c(SEXP);
 extern SEXP larr_c(SEXP);
 extern SEXP omp_test();
+extern SEXP sort_c(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"add_c",             (DL_FUNC) &add_c,             2},
     {"expand_binomial_c", (DL_FUNC) &expand_binomial_c, 1},
+    {"facts_c",           (DL_FUNC) &facts_c,           1},
     {"larr_c",            (DL_FUNC) &larr_c,            1},
     {"omp_test",          (DL_FUNC) &omp_test,          0},
+    {"sort_c",            (DL_FUNC) &sort_c,            1},
     {NULL, NULL, 0}
 };
 

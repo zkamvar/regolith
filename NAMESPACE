@@ -2,5 +2,8 @@
 
 export(add)
 export(eb)
+export(facts)
 export(has_parallel)
+export(larr)
+export(sorts)
 useDynLib(regolith, .registration = TRUE)

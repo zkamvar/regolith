@@ -16,18 +16,23 @@ add <- function(a, b){
 }
 
 
-#' Title
+#' Number of possible rearrangements
 #'
-#' @param x
+#' @param x an integer vector
 #'
-#' @return a number
+#' @return a number indicating the number of possible rearrangements for a given
+#'   vector using binomial expansion: `n!/(a!b!c!)`
+#' 
 #' @export
 #'
 #' @examples
 #' x <- c(10L, 9L, 9L, 8L, 10L)
 #' eb(x)
+#' eb(c(1, 2))
+#' eb(c(1, 1))
+#' eb(c(1, 2, 3, 3))
 eb <- function(x){
-  .Call("expand_binomial_c", x, PACKAGE = "regolith")
+  .Call("expand_binomial_c", as.integer(x), PACKAGE = "regolith")
 }
 
 #' Title 2
@@ -42,4 +47,30 @@ eb <- function(x){
 #' larr(x)
 larr <- function(x){
   .Call("larr_c", x, PACKAGE = "regolith")
+}
+
+#' Facts
+#'
+#' @param x
+#'
+#' @return a number
+#' @export
+#'
+#' @examples
+#' facts(5)
+facts <- function(x){
+  .Call("facts_c", x, PACKAGE = "regolith")
+}
+
+#' sorts
+#'
+#' @param x
+#'
+#' @return a number
+#' @export
+#'
+#' @examples
+#' sorts(sample(10, replace = TRUE))
+sorts <- function(x){
+  .Call("sort_c", x, PACKAGE = "regolith")
 }
