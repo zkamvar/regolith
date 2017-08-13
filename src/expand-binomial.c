@@ -84,13 +84,14 @@ SEXP sort_c(SEXP arr)
 	return(res);
 }
 
-SEXP nosort_c(SEXP arr)
+SEXP nosort_c(SEXP arr, SEXP print)
 {
 	SEXP res = PROTECT(allocVector(INTSXP, length(arr)));
 	int* ARR = INTEGER(arr);
 	int* PARR;
 	int i;
 	int n = length(arr);
+	int p = asInteger(print);
 	PARR = R_Calloc(n, int);
 	for (i = 0; i < n; i++)
 	{
@@ -101,7 +102,8 @@ SEXP nosort_c(SEXP arr)
 	for (i = 0; i < n; i++)
 	{
 		INTEGER(res)[i] = PARR[i];
-		Rprintf("PARR: %d\tARR: %d\n", PARR[i], ARR[i]);
+		if (p)
+			Rprintf("PARR: %d\tARR: %d\n", PARR[i], ARR[i]);
 	}
 	UNPROTECT(1);
 	R_Free(PARR);

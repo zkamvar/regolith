@@ -4,10 +4,12 @@
 \alias{sorts}
 \title{sorts}
 \usage{
-sorts(x, R = TRUE)
+sorts(x, R = TRUE, print = FALSE)
 }
 \arguments{
 \item{R}{if sort should be done by \code{R_qsort()} or \code{qsort()}}
+
+\item{print}{if \code{R = FALSE}, should the comparison be printed?}
 }
 \value{
 a number
@@ -16,5 +18,10 @@ a number
 sorts
 }
 \examples{
-sorts(sample(10, replace = TRUE))
+(x <- sample(10, replace = TRUE))
+sorts(x)
+x # has side-effect
+(x <- sample(10, replace = TRUE))
+sorts(x, R = FALSE)
+sorts(x, R = FALSE, print = TRUE)
 }

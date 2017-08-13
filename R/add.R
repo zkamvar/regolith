@@ -66,16 +66,22 @@ facts <- function(x){
 #'
 #' @param x
 #' @param R if sort should be done by `R_qsort()` or `qsort()`
+#' @param print if `R = FALSE`, should the comparison be printed?
 #'
 #' @return a number
 #' @export
 #'
 #' @examples
-#' sorts(sample(10, replace = TRUE))
-sorts <- function(x, R = TRUE){
+#' (x <- sample(10, replace = TRUE))
+#' sorts(x)
+#' x # has side-effect
+#' (x <- sample(10, replace = TRUE))
+#' sorts(x, R = FALSE)
+#' sorts(x, R = FALSE, print = TRUE)
+sorts <- function(x, R = TRUE, print = FALSE){
   if (R){
     .Call("sort_c", x, PACKAGE = "regolith")
   } else {
-    .Call("nosort_c", x, PACKAGE = "regolith")
+    .Call("nosort_c", x, print, PACKAGE = "regolith")
   }
 }
