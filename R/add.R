@@ -22,7 +22,7 @@ add <- function(a, b){
 #'
 #' @return a number indicating the number of possible rearrangements for a given
 #'   vector using binomial expansion: `n!/(a!b!c!)`
-#' 
+#'
 #' @export
 #'
 #' @examples
@@ -65,12 +65,17 @@ facts <- function(x){
 #' sorts
 #'
 #' @param x
+#' @param R if sort should be done by `R_qsort()` or `qsort()`
 #'
 #' @return a number
 #' @export
 #'
 #' @examples
 #' sorts(sample(10, replace = TRUE))
-sorts <- function(x){
-  .Call("sort_c", x, PACKAGE = "regolith")
+sorts <- function(x, R = TRUE){
+  if (R){
+    .Call("sort_c", x, PACKAGE = "regolith")
+  } else {
+    .Call("nosort_c", x, PACKAGE = "regolith")
+  }
 }

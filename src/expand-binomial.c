@@ -1,9 +1,10 @@
 #include <Rinternals.h>
 #include <R.h>
 #include <Rdefines.h>
+#include <stdlib.h>
 #define CAN_RUN 1
 
-int intcmp (const void * a, const void * b);
+int compare_function (const void * first, const void * second);
 SEXP omp_test();
 SEXP larr_c(SEXP arr);
 SEXP add_one_c(SEXP x);
@@ -15,11 +16,12 @@ SEXP expand_binomial_c(SEXP arr);
 
 
 
-int intcmp (const void * a, const void * b)
+int compare_function(const void *first, const void *second)
 {
-	   return ( *(int*)a - *(int*)b );
+  const int first_ = *(const int *)first;
+  const int second_  = *(const int *)second;
+  return (first_ > second_) - (first_ < second_);
 }
-
 SEXP omp_test()
 {
   SEXP Rout;
@@ -72,33 +74,59 @@ SEXP facts_c(SEXP n)
 SEXP sort_c(SEXP arr)
 {
 	SEXP res = PROTECT(allocVector(INTSXP, length(arr)));
-	R_qsort_int(INTEGER(arr), 0, length(arr));
+  int* ARR = INTEGER(arr);
+	R_qsort_int(ARR, 1, length(arr));
 	for (int i = 0; i < length(arr); i++)
 	{
-		INTEGER(res)[i] = INTEGER(arr)[i];
+		INTEGER(res)[i] = ARR[i];
 	}
 	UNPROTECT(1);
 	return(res);
 }
 
+SEXP nosort_c(SEXP arr)
+{
+	SEXP res = PROTECT(allocVector(INTSXP, length(arr)));
+	int* ARR = INTEGER(arr);
+	int* PARR;
+	int i;
+	int n = length(arr);
+	PARR = R_Calloc(n, int);
+	for (i = 0; i < n; i++)
+	{
+		PARR[i] = ARR[i];
+	}
+	// R_qsort_int_I(ARR, PARR, 0, length(arr));
+	qsort(PARR, n, sizeof(int), compare_function);
+	for (i = 0; i < n; i++)
+	{
+		INTEGER(res)[i] = PARR[i];
+		Rprintf("PARR: %d\tARR: %d\n", PARR[i], ARR[i]);
+	}
+	UNPROTECT(1);
+	R_Free(PARR);
+	return(res);
+}
+
 #ifdef CAN_RUN
 SEXP expand_binomial_c(SEXP arr) {
- 	SEXP res = PROTECT(allocVector(INTSXP, 1));
- 	int* RES = INTEGER(res);
- 	int i;
- 	int n = length(arr);
- 	int count = 1;
- 	int* facts;
- 	facts = R_Calloc(n, int);
- 	for (i = 1; i <= n; i++)
- 	{
- 		facts[i - 1] = (i == 1) ? i : facts[i - 2] * i;
- 	}
- 	R_qsort_int(INTEGER(arr), 0, n);
- 	int previous_value = INTEGER(arr)[0];
- 	RES[0] = count;
- 	for (i = 1; i < n; i++)
-  	{
+	SEXP res = PROTECT(allocVector(INTSXP, 1));
+	int* RES = INTEGER(res);
+	int i;
+	int n = length(arr);
+	int count = 1;
+	int* facts;
+	facts = R_Calloc(n, int);
+	for (i = 1; i <= n; i++)
+	{
+		facts[i - 1] = (i == 1) ? i : facts[i - 2] * i;
+	}
+	R_qsort_int(INTEGER(arr), 0, n);
+	// qsort(arr_point, n, sizeof(int*), compare_function);
+	int previous_value = INTEGER(arr)[0];
+	RES[0] = count;
+	for (i = 1; i < n; i++)
+	{
 		if (INTEGER(arr)[i] != previous_value)
 		{
 			RES[0] *= facts[count - 1];
@@ -111,12 +139,12 @@ SEXP expand_binomial_c(SEXP arr) {
 		}
 		previous_value = INTEGER(arr)[i];
 
- 	}
- 	RES[0] *= facts[count - 1];
- 	Rprintf("%d count: %d (%d)\n", INTEGER(arr)[n - 1], count, RES[0]);
- 	RES[0] = facts[n - 1]/RES[0]; // n!/a!b!c!
- 	R_Free(facts);
- 	UNPROTECT(1);
- 	return(res);
+	}
+	RES[0] *= facts[count - 1];
+	Rprintf("%d count: %d (%d)\n", INTEGER(arr)[n - 1], count, RES[0]);
+	RES[0] = facts[n - 1]/RES[0]; // n!/a!b!c!
+	R_Free(facts);
+	UNPROTECT(1);
+	return(res);
 }
 #endif

@@ -4,10 +4,10 @@
 \alias{sorts}
 \title{sorts}
 \usage{
-sorts(x)
+sorts(x, R = TRUE)
 }
 \arguments{
-\item{x}{}
+\item{R}{if sort should be done by \code{R_qsort()} or \code{qsort()}}
 }
 \value{
 a number
