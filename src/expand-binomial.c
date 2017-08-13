@@ -97,7 +97,7 @@ SEXP nosort_c(SEXP arr, SEXP print)
 	{
 		PARR[i] = ARR[i];
 	}
-	// R_qsort_int_I(ARR, PARR, 0, length(arr));
+	// R_qsort_int_I(ARR, PARR, 1, length(arr));
 	qsort(PARR, n, sizeof(int), compare_function);
 	for (i = 0; i < n; i++)
 	{
@@ -114,38 +114,43 @@ SEXP nosort_c(SEXP arr, SEXP print)
 SEXP expand_binomial_c(SEXP arr) {
 	SEXP res = PROTECT(allocVector(INTSXP, 1));
 	int* RES = INTEGER(res);
+	int* ARR = INTEGER(arr);
 	int i;
 	int n = length(arr);
 	int count = 1;
 	int* facts;
+	int* TEMP;
 	facts = R_Calloc(n, int);
+	TEMP  = R_Calloc(n, int);
 	for (i = 1; i <= n; i++)
 	{
 		facts[i - 1] = (i == 1) ? i : facts[i - 2] * i;
+		TEMP[i - 1] = ARR[i - 1];
 	}
-	R_qsort_int(INTEGER(arr), 0, n);
-	// qsort(arr_point, n, sizeof(int*), compare_function);
-	int previous_value = INTEGER(arr)[0];
+	R_qsort_int(TEMP, 1, n); // Note: this takes the arguments of what indices to sort, 1-indexed
+	// qsort(TEMP, n, sizeof(int), compare_function);
+	int previous_value = TEMP[0];
 	RES[0] = count;
 	for (i = 1; i < n; i++)
 	{
-		if (INTEGER(arr)[i] != previous_value)
+		if (TEMP[i] != previous_value)
 		{
 			RES[0] *= facts[count - 1];
-			Rprintf("%d count: %d (%d)\n", INTEGER(arr)[i - 1], count, RES[0]);
+			Rprintf("%d count: %d (%d)\n", TEMP[i - 1], count, RES[0]);
 			count = 1;
 		}
 		else
 		{
 			count++;
 		}
-		previous_value = INTEGER(arr)[i];
+		previous_value = TEMP[i];
 
 	}
 	RES[0] *= facts[count - 1];
-	Rprintf("%d count: %d (%d)\n", INTEGER(arr)[n - 1], count, RES[0]);
+	Rprintf("%d count: %d (%d)\n", TEMP[n - 1], count, RES[0]);
 	RES[0] = facts[n - 1]/RES[0]; // n!/a!b!c!
 	R_Free(facts);
+	R_Free(TEMP);
 	UNPROTECT(1);
 	return(res);
 }
