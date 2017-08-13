@@ -19,6 +19,7 @@ add <- function(a, b){
 #' Number of possible rearrangements
 #'
 #' @param x an integer vector
+#' @param rqs a `logical` indicating whether or not R's version of quicksort should be used. Defaults to `TRUE`.
 #'
 #' @return a number indicating the number of possible rearrangements for a given
 #'   vector using binomial expansion: `n!/(a!b!c!)`
@@ -31,8 +32,8 @@ add <- function(a, b){
 #' eb(c(1, 2))
 #' eb(c(1, 1))
 #' eb(c(1, 2, 3, 3))
-eb <- function(x){
-  .Call("expand_binomial_c", as.integer(x), PACKAGE = "regolith")
+eb <- function(x, rqs = TRUE){
+  .Call("expand_binomial_c", as.integer(x), rqs, PACKAGE = "regolith")
 }
 
 #' Title 2

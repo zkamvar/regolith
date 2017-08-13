@@ -4,10 +4,12 @@
 \alias{eb}
 \title{Number of possible rearrangements}
 \usage{
-eb(x)
+eb(x, rqs = TRUE)
 }
 \arguments{
 \item{x}{an integer vector}
+
+\item{rqs}{a \code{logical} indicating whether or not R's version of quicksort should be used. Defaults to \code{TRUE}.}
 }
 \value{
 a number indicating the number of possible rearrangements for a given

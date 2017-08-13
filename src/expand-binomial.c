@@ -11,7 +11,8 @@ SEXP add_one_c(SEXP x);
 // Simple function to check for openMP support
 // Returns 1 if openMP is supported, 0 if it is not.
 #ifdef CAN_RUN
-SEXP expand_binomial_c(SEXP arr);
+SEXP expand_binomial_c(SEXP arr, SEXP rqs);
+int expand_binomial_internal(int* ARR, int n, int rqs);
 #endif
 
 
@@ -111,12 +112,18 @@ SEXP nosort_c(SEXP arr, SEXP print)
 }
 
 #ifdef CAN_RUN
-SEXP expand_binomial_c(SEXP arr) {
+SEXP expand_binomial_c(SEXP arr, SEXP rqs) {
 	SEXP res = PROTECT(allocVector(INTSXP, 1));
 	int* RES = INTEGER(res);
 	int* ARR = INTEGER(arr);
+	RES[0]   = expand_binomial_internal(ARR, length(arr), asInteger(rqs));
+	UNPROTECT(1);
+	return(res);
+}
+
+int expand_binomial_internal(int* ARR, int n, int rqs) {
+	int res;
 	int i;
-	int n = length(arr);
 	int count = 1;
 	int* facts;
 	int* TEMP;
@@ -127,16 +134,22 @@ SEXP expand_binomial_c(SEXP arr) {
 		facts[i - 1] = (i == 1) ? i : facts[i - 2] * i;
 		TEMP[i - 1] = ARR[i - 1];
 	}
-	R_qsort_int(TEMP, 1, n); // Note: this takes the arguments of what indices to sort, 1-indexed
-	// qsort(TEMP, n, sizeof(int), compare_function);
+	if (rqs)
+	{
+		R_qsort_int(TEMP, 1, n); // Note: this takes the arguments of what indices to sort, 1-indexed
+	}
+	else
+	{
+		qsort(TEMP, n, sizeof(int), compare_function);
+	}
 	int previous_value = TEMP[0];
-	RES[0] = count;
+	res = count;
 	for (i = 1; i < n; i++)
 	{
 		if (TEMP[i] != previous_value)
 		{
-			RES[0] *= facts[count - 1];
-			Rprintf("%d count: %d (%d)\n", TEMP[i - 1], count, RES[0]);
+			res *= facts[count - 1];
+			Rprintf("%d count: %d (%d)\n", TEMP[i - 1], count, res);
 			count = 1;
 		}
 		else
@@ -146,12 +159,12 @@ SEXP expand_binomial_c(SEXP arr) {
 		previous_value = TEMP[i];
 
 	}
-	RES[0] *= facts[count - 1];
-	Rprintf("%d count: %d (%d)\n", TEMP[n - 1], count, RES[0]);
-	RES[0] = facts[n - 1]/RES[0]; // n!/a!b!c!
+	res *= facts[count - 1];
+	Rprintf("%d count: %d (%d)\n", TEMP[n - 1], count, res);
+	res = facts[n - 1]/res; // n!/a!b!c!
 	R_Free(facts);
 	R_Free(TEMP);
-	UNPROTECT(1);
 	return(res);
 }
+
 #endif
