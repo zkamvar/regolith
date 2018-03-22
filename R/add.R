@@ -65,7 +65,7 @@ facts <- function(x){
 
 #' sorts
 #'
-#' @param x
+#' @param x a vector of integers
 #' @param R if sort should be done by `R_qsort()` or `qsort()`
 #' @param print if `R = FALSE`, should the comparison be printed?
 #'

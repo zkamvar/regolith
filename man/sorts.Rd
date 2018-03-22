@@ -7,6 +7,8 @@
 sorts(x, R = TRUE, print = FALSE)
 }
 \arguments{
+\item{x}{a vector of integers}
+
 \item{R}{if sort should be done by \code{R_qsort()} or \code{qsort()}}
 
 \item{print}{if \code{R = FALSE}, should the comparison be printed?}
