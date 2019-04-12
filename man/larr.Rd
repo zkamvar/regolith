@@ -7,7 +7,7 @@
 larr(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a number to larr}
 }
 \value{
 a number

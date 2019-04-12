@@ -38,7 +38,7 @@ eb <- function(x, rqs = TRUE){
 
 #' Title 2
 #'
-#' @param x
+#' @param x a number to larr
 #'
 #' @return a number
 #' @export
@@ -52,7 +52,7 @@ larr <- function(x){
 
 #' Facts
 #'
-#' @param x
+#' @param x a number to factorialize
 #'
 #' @return a number
 #' @export

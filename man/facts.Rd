@@ -7,7 +7,7 @@
 facts(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a number to factorialize}
 }
 \value{
 a number
