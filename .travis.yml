@@ -28,12 +28,7 @@ after_script: R -q -e 'tic::after_script()'
 # Custom parts:
 
 # Header
-language: 
-- r: 3.3
-- r: release
-  env:
-    - BUILD_PKGDOWN=true
-- r: devel
+language: r
 sudo: false
 dist: trusty
 cache: packages
@@ -42,6 +37,7 @@ latex: false
 #env
 env:
   global:
+  - BUILD_PKGDOWN=true
   - _R_CHECK_FORCE_SUGGESTS_=false
   - MAKEFLAGS="-j 2"
 
