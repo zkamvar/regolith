@@ -3,3 +3,4 @@
 ^\.travis\.yml$
 ^tic\.R$
 Makefile
+^appveyor\.yml$
